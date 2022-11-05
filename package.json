@@ -1,7 +1,7 @@
 {
   "homepage": "https://bskmrkvc.github.io/image-generator",
   "name": "dall-e-api",
-  "private": true,
+  "private": false,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
