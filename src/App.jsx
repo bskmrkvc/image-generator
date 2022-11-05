@@ -1,0 +1,65 @@
+import { useState } from "react";
+import { Configuration, OpenAIApi } from "openai";
+import "./App.css";
+
+function App() {
+  const [prompt, setPrompt] = useState("");
+  const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [placeholder, setPlaceholder] = useState(
+    "Type in a description of a picture you want to create..."
+  );
+  const configuration = new Configuration({
+    apiKey: import.meta.env.VITE_Open_AI_Key,
+  });
+
+  const openai = new OpenAIApi(configuration);
+
+  const generateImage = async () => {
+    setPlaceholder(`Search ${prompt}..`);
+    setLoading(true);
+    const res = await openai.createImage({
+      prompt: prompt,
+      n: 1,
+      size: "512x512",
+    });
+    setLoading(false);
+    setResult(res.data.data[0].url);
+  };
+  return (
+    <div className="app-main">
+      {loading ? (
+        <>
+          <h1>Generating..Please Wait..</h1>
+          <div class="lds-ripple">
+            <div></div>
+            <div></div>
+          </div>
+        </>
+      ) : (
+        <>
+          <h1>Generate an Image using<br/> Open AI's DALL-E 2</h1>
+
+          <textarea
+            className="app-input"
+            placeholder={placeholder}
+            onChange={(e) => setPrompt(e.target.value)}
+            rows="10"
+            cols="40"
+          />
+          <button onClick={generateImage}>Generate an Image</button>
+          {result.length > 0 ? (
+            <div>
+              <h2>{prompt}</h2>
+              <img className="result-image" src={result} alt="result" />
+            </div>
+          ) : (
+            <></>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+export default App;
